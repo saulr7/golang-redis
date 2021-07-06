@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"go-redis/db"
 	m "go-redis/models"
 
@@ -14,26 +13,25 @@ var (
 	ctx = context.Background()
 )
 
-func AddUser(u m.User) error {
+func AddUser(u m.User) (m.User, error) {
 
 	rdb := db.PoolRDB()
 
 	u.ID = uuid.NewString()
 
 	uJson, err := json.Marshal(u)
-	fmt.Println(u)
 
 	if err != nil {
-		return err
+		return u, err
 	}
 
 	err = rdb.Set(ctx, u.ID, uJson, 0).Err()
 
 	if err != nil {
-		return err
+		return u, err
 	}
 
-	return nil
+	return u, nil
 }
 
 func GetUser(ID string) (m.User, error) {
@@ -55,4 +53,12 @@ func GetUser(ID string) (m.User, error) {
 	}
 
 	return u, err
+}
+
+func DeleteUser(ID string) error {
+
+	rdb := db.PoolRDB()
+
+	return rdb.Del(ctx, ID).Err()
+
 }

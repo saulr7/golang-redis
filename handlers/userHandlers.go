@@ -16,14 +16,14 @@ func AddUserHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "")
 	}
 
-	err := s.AddUser(*u)
+	us, err := s.AddUser(*u)
 
 	if err != nil {
 		fmt.Println(err)
 		return c.String(http.StatusInternalServerError, "something went wrong")
 	}
 
-	return c.JSON(http.StatusCreated, u)
+	return c.JSON(http.StatusCreated, us)
 
 }
 
@@ -39,4 +39,19 @@ func GetUserHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, u)
+}
+
+func DeleteUserHanlder(c echo.Context) error {
+
+	id := c.Param("id")
+
+	err := s.DeleteUser(id)
+
+	if err != nil {
+		fmt.Println(err)
+		return c.String(http.StatusInternalServerError, "something went wrong")
+	}
+
+	return c.JSON(http.StatusOK, nil)
+
 }
